@@ -5,16 +5,25 @@ const {
 
 // The GraphQL schema
 const typeDefs = gql`
+  type User {
+    username: String!
+    email: String!
+  }
   type Query {
-    "A simple type for getting started!"
-    hello: String
+    getUser: User!
   }
 `;
 
 // A map of functions which return data for the schema.
 const resolvers = {
   Query: {
-    hello: () => "world",
+    getUser: () => {
+      const user = {
+        username: "user1",
+        email: "user1@gmail.com",
+      };
+      return user;
+    },
   },
 };
 
