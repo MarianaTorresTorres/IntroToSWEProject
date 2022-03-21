@@ -1,31 +1,13 @@
-const { ApolloServer, gql } = require("apollo-server");
+const { ApolloServer, PubSub } = require("apollo-server");
 const {
   ApolloServerPluginLandingPageGraphQLPlayground,
 } = require("apollo-server-core");
+const mongoose = require("mongoose");
 
-// The GraphQL schema
-const typeDefs = gql`
-  type User {
-    username: String!
-    email: String!
-  }
-  type Query {
-    getUser: User!
-  }
-`;
+require("dotenv").config();
 
-// A map of functions which return data for the schema.
-const resolvers = {
-  Query: {
-    getUser: () => {
-      const user = {
-        username: "user1",
-        email: "user1@gmail.com",
-      };
-      return user;
-    },
-  },
-};
+const typeDefs = require("./graphql/typeDefs.js");
+const resolvers = require("./graphql/resolvers");
 
 const server = new ApolloServer({
   typeDefs,
@@ -33,6 +15,19 @@ const server = new ApolloServer({
   plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
 });
 
-server.listen().then(({ url }) => {
-  console.log(`🚀 Server ready at ${url}`);
-});
+const port = process.env.PORT || 5000;
+
+mongoose
+  .connect(process.env.URI, {
+    useNewUrlParser: true,
+  })
+  .then(() => {
+    console.log("\nSUCCESS: CONNECTED TO DATABASE");
+    return server.listen({ port: port });
+  })
+  .then((res) => {
+    console.log(`SERVER RUNNING AT ${res.url}\n`);
+  })
+  .catch((err) => {
+    console.error(err);
+  });
