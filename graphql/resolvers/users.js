@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { UserInputError } = require("apollo-server");
 
-const { validateRegisterInput } = require("../../util/validators");
+const { validateRegisterInput, validateLoginInput } = require("../../util/validators");
 const User = require("../../models/User.js");
 
 require("dotenv").config();
@@ -29,33 +29,6 @@ module.exports = {
         }
       } catch (err) {
         throw new Error(err);
-      }
-    },
-    async login(_, {username, password}) {
-      try {
-          if(username.trim() === '')
-              throw new Error("Username must not be empty");
-          if(password === '')
-              throw new Error("Password must not be empty");
-          
-          const user = await User.findOne({username});
-          if(!user){
-              throw new Error("User not found");
-          }
-          const passwordMatch = await bcrypt.compare(password, user.password);
-          if(!passwordMatch){
-              throw new Error("Incorrect password");
-          }
-          const token = jwt.sign({username},
-              'my-secret-from-env-file-in-prod', {expiresIn: '1d'});
-
-          return{ user.toJSON(),
-          createdAt: user.createdAt.toISOString(),
-          token,
-          }
-      
-      } catch (err) {
-          throw new Error(err);
       }
     },
   },
@@ -110,6 +83,40 @@ module.exports = {
         id: res._id,
         token,
       };
+    },
+
+    async login(_, { username, password }) {
+      /*validate login input*/
+      const { errors, valid } = validateLoginInput(username, password);
+      if(!valid){
+        throw new UserInputError("Errors" , { errors });
+      }
+
+      const user = await User.findOne({ username });
+      if(!user){
+        errors.general = 'User not found';
+        throw new UserInputError("Wrong credentials" , { errors });
+      }
+
+      const passwordMatch = await bcrypt.compare(password, user.password);
+      if(!passwordMatch){
+        errors.general = 'Wrong credentials';
+        throw new UserInputError("Wrong credentials" , { errors });
+      }
+      const token = jwt.sign(
+        {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+        },
+        process.env.SECRET,
+        { expiresIn: "24h" }
+      );
+      return {
+        ...user._doc,
+        id: user._id,
+        token,
+      }; 
     },
   },
 };
