@@ -49,10 +49,7 @@ function addVideoToDB(video, topic) {
     headers: { "content-type": "application/json" },
     method: "POST",
     body: mutation,
-  })
-    .then((res) => res.json())
-    .then((res) => console.log(res.data))
-    .catch((err) => console.log(err));
+  }).catch((err) => console.log(err));
 }
 
 function addArticleToDB(article, topic) {
@@ -111,7 +108,6 @@ function NewsAPISearch(topic) {
     .everything({
       q: newsTopics[topic],
       language: "en",
-      country: "us",
       pageSize: 20,
       sortBy: "relevancy",
     })

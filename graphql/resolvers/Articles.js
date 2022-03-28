@@ -1,4 +1,5 @@
 const Article = require("../../models/Article.js");
+const User = require("../../models/User.js");
 
 module.exports = {
   Query: {
@@ -41,6 +42,41 @@ module.exports = {
         throw new Error(err);
       }
     },
+    async getArticlesForUser(_, { userID }) {
+      try {
+        const user = User.findById(userID);
+        if (user) {
+          var articles = [];
+          let count = 50 / user.interests.length;
+          for (var interest in user.interests) {
+            const articlesOfTopic = Article.find({
+              topic: sinterest,
+              format: "article",
+            });
+            const videosOfTopic = Article.find({
+              topic: interest,
+              format: "video",
+            });
+
+            for (let i = 0; i < count; i++) {
+              articles.push(
+                articlesOfTopic[
+                  Math.floor(Math.random() * articlesOfTopic.length)
+                ]
+              );
+              articles.push(
+                videosOfTopic[Math.floor(Math.random() * videosOfTopic.length)]
+              );
+            }
+          }
+          return articles;
+        } else {
+          throw new Error("User doesn't exist");
+        }
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
   },
   Mutation: {
     async createArticle(
@@ -57,20 +93,6 @@ module.exports = {
         },
       }
     ) {
-      // idk if i need this since its not user input...
-      /*const { valid, errors } = validateCreateArticleInput(
-        topic,
-        format,
-        title,
-        author,
-        desc,
-        url,
-        imageUrl
-      );
-
-      if(!valid){
-        throw new Error("Errors", {errors});
-      }*/
       const newArticle = new Article({
         topic,
         format,
