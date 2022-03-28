@@ -42,22 +42,21 @@ module.exports = {
         throw new Error(err);
       }
     },
-    async getArticlesForUser(_, { userID }) {
+    async getArticlesForUser(_, { userId }) {
       try {
-        const user = User.findById(userID);
+        const user = await User.findById(userId);
         if (user) {
           var articles = [];
-          let count = 50 / user.interests.length;
-          for (var interest in user.interests) {
-            const articlesOfTopic = Article.find({
-              topic: sinterest,
+          let count = 10 / user.interests.length;
+          for (const interest of user.interests) {
+            const articlesOfTopic = await Article.find({
+              topic: interest,
               format: "article",
             });
-            const videosOfTopic = Article.find({
+            const videosOfTopic = await Article.find({
               topic: interest,
               format: "video",
             });
-
             for (let i = 0; i < count; i++) {
               articles.push(
                 articlesOfTopic[
@@ -69,6 +68,7 @@ module.exports = {
               );
             }
           }
+          articles.sort(() => Math.random() - 0.5);
           return articles;
         } else {
           throw new Error("User doesn't exist");
