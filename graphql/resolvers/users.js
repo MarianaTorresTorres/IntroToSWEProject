@@ -25,4 +25,43 @@ module.exports = {
       }
     },
   },
+  Mutation: {
+    async editUserProfile(
+      _, 
+      { 
+        editUserProfileInput: {
+          username,
+          email,
+          passwords,
+          createdAt,
+          interests
+        },
+      }
+      ) {
+        try {
+          const user = await User.find({ username });
+          if (user) {
+            const updatedUser = await User.findOneAndUpdate (
+              { username },
+              {
+                username,
+                email,
+                passwords,
+                createdAt,
+                interests,
+              },
+              {
+                new: true,
+              }
+            );
+
+            return updatedUser;
+          } else {
+            throw new Error("User not found");
+          }
+        } catch (err) {
+          throw new Error(err);
+        }
+    }
+  }
 };

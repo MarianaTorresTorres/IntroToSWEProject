@@ -19,6 +19,12 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  interests: [{
+    type: String,
+    unique: true,
+    lowercase: true,
+  }],
 });
 
 module.exports = model("User", userSchema);
+
