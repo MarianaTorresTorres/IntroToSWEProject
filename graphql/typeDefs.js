@@ -3,6 +3,8 @@ const users = require("./resolvers/users");
 
 module.exports = gql`
   type User {
+    id: ID!
+    token: String!
     username: String!
     email: String!
     password: String!
@@ -16,12 +18,19 @@ module.exports = gql`
     createdAt: String!
     interests: [String]
   }
+  input RegisterInput {
+    username: String!
+    email: String!
+    password: String!
+    confirmPassword: String!
+  }
   type Query {
     getUsers: [User]
     getUser(userId: ID!): User
   }
   type Mutation {
     editUserProfile(editUserProfileInput: editUserProfileInput): User! 
+    register(registerInput: RegisterInput): User!
   }
 `;
 

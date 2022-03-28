@@ -7,5 +7,5 @@ module.exports = {
   },
   Mutation: {
     ...usersResolvers.Mutation,
-  }
+  },
 };
