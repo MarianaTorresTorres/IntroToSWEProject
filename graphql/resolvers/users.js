@@ -86,7 +86,8 @@ module.exports = {
         { expiresIn: "24h" }
       );
 
-      const url = `https://localhost:5000/confirmation/${res.id}`;
+      const url =
+        "https://www.canva.com/design/DAE8TCHeOXk/EIA3TWq0-pgCjMsvbJP_Lw/view?website#4";
 
       transport
         .sendMail({
@@ -97,13 +98,18 @@ module.exports = {
             "Welcome to edYou, " +
             res.username +
             "! Please click on the link below to complete your registration\n\n" +
-            "<a href=" + url + ">" + url + "<a/>",
+            "<a href=" +
+            url +
+            ">" +
+            url +
+            "<a/>",
         })
         .then(() => {
           console.log("Confirmation Email sent!");
+          res.confirmed = true;
         })
         .catch(() => {
-          console.log("Ah shit, the email didn't send for some reason :(");
+          console.log("Oh no! The email didn't send for some reason :(");
         });
 
       return {
