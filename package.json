@@ -1,5 +1,5 @@
 {
-  "name": "IntroToSWEProject",
+  "name": "introtosweproject",
   "version": "1.0.0",
   "description": "Hi :)",
   "main": "index.js",
@@ -18,10 +18,14 @@
   },
   "homepage": "https://github.com/MarianaTorresTorres/IntroToSWEProject#readme",
   "dependencies": {
+    "apollo": "^0.2.2",
     "apollo-server": "^3.6.4",
+    "bcryptjs": "^2.4.3",
     "dotenv": "^16.0.0",
     "graphql": "^16.3.0",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.2.7",
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "server": "^0.0.3"
   }
 }

@@ -11,4 +11,7 @@ module.exports = gql`
     getUsers: [User]
     getUser(userId: ID!): User
   }
+  type Mutation{
+    login(username: String!, password: String!): User!
+  }
 `;
