@@ -86,7 +86,7 @@ module.exports = {
         { expiresIn: "24h" }
       );
 
-      const url = "https://localhost:5000/confirmation/${token}";
+      const url = `https://localhost:5000/confirmation/${res.id}`;
 
       transport
         .sendMail({
@@ -94,7 +94,10 @@ module.exports = {
           to: res.email,
           subject: "edYou Confirmation Email",
           html:
-            "Welcome to edYou, `${user.username}`! Click here to confirm your email: <a href=${url}>`${url}`</a>",
+            "Welcome to edYou, " +
+            res.username +
+            "! Please click on the link below to complete your registration\n\n" +
+            "<a href=" + url + ">" + url + "<a/>",
         })
         .then(() => {
           console.log("Confirmation Email sent!");

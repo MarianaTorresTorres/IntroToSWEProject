@@ -26,7 +26,6 @@
     "mongoose": "^6.2.7",
     "nodemailer": "^6.7.3",
     "nodemailer-sendgrid": "^1.0.3",
-    "nodemailer-sendgrid-transport": "^0.2.0",
     "nodemon": "^2.0.15"
   }
 }
