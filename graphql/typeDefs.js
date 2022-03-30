@@ -57,8 +57,6 @@ module.exports = gql`
   type Mutation {
     createArticle(createArticleInput: createArticleInput): Article
     deleteArticles: [Article]
-  }
-  type Mutation {
     editUserProfile(editUserProfileInput: editUserProfileInput): User!
     register(registerInput: RegisterInput): User!
     login(username: String!, password: String!): User!

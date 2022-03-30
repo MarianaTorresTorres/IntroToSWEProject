@@ -5,13 +5,13 @@ const NewsAPI = require("newsapi");
 const newsapi = new NewsAPI(process.env.NEWS_API_KEY);
 require("dotenv").config();
 
-var YTTopics = {
+let YTTopics = {
   economics: "economics stocks|crypto|housing|theory|taxes|micro|macro",
   renewableEnergy: "renewable energy solar|wind|Hydropower|geothermal|biomass",
   technology: "technology Automated|AI|ML|VR|AR|Blockchain|Web3|Quantum|Cloud",
 };
 
-var newsTopics = {
+let newsTopics = {
   economics:
     "economics AND (stocks OR crypto OR housing OR theory OR taxes OR micro OR macro)",
   renewableenergy:
@@ -55,7 +55,7 @@ function addVideoToDB(video, topic) {
 function addArticleToDB(article, topic) {
   if (article.author == null) article.author = "N/A";
   if (article.desc == null) article.desc = "N/A";
-  var desc = article.description.replace(/(<([^>]+)>)/gi, "");
+  let desc = article.description.replace(/(<([^>]+)>)/gi, "");
   desc = desc.replace(/"/g, "");
   desc = desc.replace(/\n/g, "");
   article.description = desc;
@@ -120,17 +120,17 @@ function NewsAPISearch(topic) {
 }
 
 function getYoutubeData() {
-  for (var topic in YTTopics) YoutubeAPISearch(topic);
+  for (let topic in YTTopics) YoutubeAPISearch(topic);
 }
 
 function getNewsData() {
-  for (var topic in newsTopics) NewsAPISearch(topic);
+  for (let topic in newsTopics) NewsAPISearch(topic);
 }
 
 function deleteArticles() {
   const mutation = JSON.stringify({
     query: `mutation {
-      deleteArticles { 
+      deleteArticles {
         topic
       }
     }`,
