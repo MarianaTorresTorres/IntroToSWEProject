@@ -1,11 +1,19 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { UserInputError } = require("apollo-server");
+const nodemailer = require("nodemailer");
+const nodemailerSendgrid = require("nodemailer-sendgrid");
 
 const { validateRegisterInput, validateLoginInput } = require("../../util/validators");
 const User = require("../../models/User.js");
 
 require("dotenv").config();
+
+const transport = nodemailer.createTransport(
+  nodemailerSendgrid({
+    apiKey: process.env.SENDGRID_API_KEY,
+  })
+);
 
 module.exports = {
   Query: {
@@ -115,6 +123,32 @@ module.exports = {
         process.env.SECRET,
         { expiresIn: "24h" }
       );
+
+      const url =
+        "https://www.canva.com/design/DAE8TCHeOXk/EIA3TWq0-pgCjMsvbJP_Lw/view?website#4";
+
+      transport
+        .sendMail({
+          from: "mari.torret@gmail.com",
+          to: res.email,
+          subject: "edYou Confirmation Email",
+          html:
+            "Welcome to edYou, " +
+            res.username +
+            "! Please click on the link below to complete your registration\n\n" +
+            "<a href=" +
+            url +
+            ">" +
+            url +
+            "<a/>",
+        })
+        .then(() => {
+          console.log("Confirmation Email sent!");
+          res.confirmed = true;
+        })
+        .catch(() => {
+          console.log("Oh no! The email didn't send for some reason :(");
+        });
 
       return {
         ...res._doc,
