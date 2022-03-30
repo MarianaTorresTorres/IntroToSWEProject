@@ -23,6 +23,12 @@ const userSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  interests: [{
+    type: String,
+    unique: true,
+    lowercase: true,
+  }],
 });
 
 module.exports = model("User", userSchema);
+

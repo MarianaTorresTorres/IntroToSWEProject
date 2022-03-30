@@ -4,7 +4,7 @@ const { UserInputError } = require("apollo-server");
 const nodemailer = require("nodemailer");
 const nodemailerSendgrid = require("nodemailer-sendgrid");
 
-const { validateRegisterInput } = require("../../util/validators");
+const { validateRegisterInput, validateLoginInput } = require("../../util/validators");
 const User = require("../../models/User.js");
 
 require("dotenv").config();
@@ -41,6 +41,44 @@ module.exports = {
     },
   },
   Mutation: {
+    async editUserProfile(
+      _, 
+      { 
+        editUserProfileInput: {
+          username,
+          email,
+          passwords,
+          createdAt,
+          interests
+        },
+      }
+      ) {
+        try {
+          const user = await User.find({ username });
+          if (user) {
+            const updatedUser = await User.findOneAndUpdate (
+              { username },
+              {
+                username,
+                email,
+                passwords,
+                createdAt,
+                interests,
+              },
+              {
+                new: true,
+              }
+            );
+
+            return updatedUser;
+          } else {
+            throw new Error("User not found");
+          }
+        } catch (err) {
+          throw new Error(err);
+        }
+    }
+  },
     async register(
       _,
       { registerInput: { username, email, password, confirmPassword } }
@@ -117,6 +155,40 @@ module.exports = {
         id: res._id,
         token,
       };
+    },
+    async login(_, { username, password }) {
+      /*validate login input*/
+      const { errors, valid } = validateLoginInput(username, password);
+      if(!valid){
+        throw new UserInputError("Errors" , { errors });
+      }
+      /*Check Credentials*/
+      const user = await User.findOne({ username });
+      if(!user){
+        errors.general = 'User not found';
+        throw new UserInputError("Wrong credentials" , { errors });
+      }
+
+      const passwordMatch = await bcrypt.compare(password, user.password);
+      if(!passwordMatch){
+        errors.general = 'Wrong credentials';
+        throw new UserInputError("Wrong credentials" , { errors });
+      }
+
+      const token = jwt.sign(
+        {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+        },
+        process.env.SECRET,
+        { expiresIn: "24h" }
+      );
+      return {
+        ...user._doc,
+        id: user._id,
+        token,
+      }; 
     },
   },
 };
