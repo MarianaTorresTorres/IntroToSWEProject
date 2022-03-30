@@ -1,5 +1,4 @@
 const { gql } = require("apollo-server");
-const users = require("./resolvers/users");
 
 module.exports = gql`
   type User {
@@ -18,6 +17,27 @@ module.exports = gql`
     createdAt: String!
     interests: [String]
   }
+
+  type Article {
+    topic: String!
+    format: String!
+    title: String!
+    author: String!
+    desc: String!
+    url: String!
+    imageUrl: String
+  }
+
+  input createArticleInput {
+    topic: String!
+    format: String!
+    title: String!
+    author: String!
+    desc: String
+    url: String!
+    imageUrl: String
+  }
+
   input RegisterInput {
     username: String!
     email: String!
@@ -27,11 +47,18 @@ module.exports = gql`
   type Query {
     getUsers: [User]
     getUser(userId: ID!): User
+    getArticles: [Article]
+    getArticlesByTopic(topic: String): [Article]
+    getArticlesByFormat(format: String): [Article]
+    getArticlesByTopicAndFormat(topic: String, format: String): [Article]
+    getArticlesForUser(userId: ID!): [Article]
   }
+
   type Mutation {
-    editUserProfile(editUserProfileInput: editUserProfileInput): User! 
+    createArticle(createArticleInput: createArticleInput): Article
+    deleteArticles: [Article]
+    editUserProfile(editUserProfileInput: editUserProfileInput): User!
     register(registerInput: RegisterInput): User!
     login(username: String!, password: String!): User!
   }
 `;
-

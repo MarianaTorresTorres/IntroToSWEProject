@@ -9,6 +9,13 @@ require("dotenv").config();
 const typeDefs = require("./graphql/typeDefs.js");
 const resolvers = require("./graphql/resolvers");
 
+const schedule = require("node-schedule");
+const populate = require("./populateArticles.js");
+
+const job = schedule.scheduleJob("0 */12 * * *", () => {
+  populate.populateDataBase();
+});
+
 const server = new ApolloServer({
   typeDefs,
   resolvers,
