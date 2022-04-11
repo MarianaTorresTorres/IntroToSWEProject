@@ -10,13 +10,6 @@ module.exports = gql`
     createdAt: String!
     interests: [String]
   }
-  input editUserProfileInput {
-    username: String!
-    email: String!
-    password: String!
-    createdAt: String!
-    interests: [String]
-  }
 
   type Article {
     topic: String!
@@ -26,6 +19,20 @@ module.exports = gql`
     desc: String!
     url: String!
     imageUrl: String
+  }
+
+  input RegisterInput {
+    username: String!
+    email: String!
+    password: String!
+    confirmPassword: String!
+  }
+
+  input editUserProfileInput {
+    username: String!
+    email: String!
+    password: String!
+    interests: [String]
   }
 
   input createArticleInput {
@@ -38,12 +45,6 @@ module.exports = gql`
     imageUrl: String
   }
 
-  input RegisterInput {
-    username: String!
-    email: String!
-    password: String!
-    confirmPassword: String!
-  }
   type Query {
     getUsers: [User]
     getUser(userId: ID!): User
@@ -55,10 +56,10 @@ module.exports = gql`
   }
 
   type Mutation {
-    createArticle(createArticleInput: createArticleInput): Article
-    deleteArticles: [Article]
-    editUserProfile(editUserProfileInput: editUserProfileInput): User!
     register(registerInput: RegisterInput): User!
     login(username: String!, password: String!): User!
+    editUserProfile(editUserProfileInput: editUserProfileInput): User!
+    createArticle(createArticleInput: createArticleInput): Article
+    deleteArticles: [Article]
   }
 `;

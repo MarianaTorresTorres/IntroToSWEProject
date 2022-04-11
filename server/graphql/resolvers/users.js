@@ -48,7 +48,6 @@ module.exports = {
           username,
           email,
           passwords,
-          createdAt,
           interests,
         },
       }
@@ -62,7 +61,6 @@ module.exports = {
               username,
               email,
               passwords,
-              createdAt,
               interests,
             },
             {
@@ -187,7 +185,7 @@ module.exports = {
         ...user._doc,
         id: user._id,
         token,
-      }; 
+      };
     },
   },
 };
