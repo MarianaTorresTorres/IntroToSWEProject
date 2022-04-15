@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'pages/register.dart';
 
-void main() => runApp(EdYou());
+void main() => runApp(const EdYou());
 
 class EdYou extends StatelessWidget {
+  const EdYou({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
