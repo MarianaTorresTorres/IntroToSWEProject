@@ -53,6 +53,7 @@ module.exports = gql`
     getArticlesByFormat(format: String): [Article]
     getArticlesByTopicAndFormat(topic: String, format: String): [Article]
     getArticlesForUser(userId: ID!): [Article]
+    getSavedArticles: [Article]
   }
 
   type Mutation {
