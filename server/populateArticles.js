@@ -35,7 +35,7 @@ function addVideoToDB(video, topic) {
         author: "${video.snippet.channelTitle}"
         desc: "${video.snippet.description}"
         url: "https://www.youtube.com/watch?v=${video.id.videoId}"
-        imageUrl: "${video.snippet.thumbnails.default.url}"
+        imageUrl: "${video.snippet.thumbnails.medium.url}"
       }){
         topic
         format
