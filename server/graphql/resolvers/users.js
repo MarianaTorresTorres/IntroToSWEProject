@@ -39,6 +39,14 @@ module.exports = {
         throw new Error(err);
       }
     },
+    async getSavedArticles(_, { userId }) {
+      try {
+        const user = await User.findById(userId);
+        return user.savedArticles;
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
   },
   Mutation: {
     async editUserProfile(
