@@ -2,6 +2,7 @@ import 'package:client/Screens/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:client/Screens/forget.dart';
+import 'package:client/nav.dart';
 
 class RegField extends StatelessWidget {
   final String title;
@@ -101,7 +102,13 @@ class LoginBody extends State<Login> {
                                 ),
                                 child: const Text('SUBMIT',
                                     style: TextStyle(fontSize: 20)),
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Navigation()),
+                                  );
+                                },
                               )),
                         ],
                       ),
@@ -115,12 +122,13 @@ class LoginBody extends State<Login> {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => Forget()),
+                          MaterialPageRoute(
+                              builder: (context) => const Forget()),
                         );
                       },
-                      child: Text(
+                      child: const Text(
                         "Forgot Password?",
-                        style: const TextStyle(fontSize: 20),
+                        style: TextStyle(fontSize: 20),
                       )),
                 ),
                 Positioned(
@@ -130,10 +138,11 @@ class LoginBody extends State<Login> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Welcome()),
+                        MaterialPageRoute(
+                            builder: (context) => const Welcome()),
                       );
                     },
-                    icon: Icon(Icons.arrow_back_ios),
+                    icon: const Icon(Icons.arrow_back_ios),
                     color: Colors.white,
                     iconSize: 30,
                   ),

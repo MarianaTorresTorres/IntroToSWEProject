@@ -7,7 +7,7 @@ import "Screens/profile.dart";
 class Navigation extends StatefulWidget {
   @override
   _NavigationState createState() => _NavigationState();
-  static String routeName = '/navigation';
+  static String routeName = '/welcome';
 }
 
 class _NavigationState extends State<Navigation> {
