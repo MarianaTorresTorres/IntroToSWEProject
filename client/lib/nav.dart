@@ -1,3 +1,4 @@
+import 'package:client/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:client/buttons.dart';
 
@@ -73,12 +74,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.orange,
-      child: const Center(
-        child: Text('Home'),
-      ),
-    );
+    return HomePage();
   }
 }
 
@@ -142,14 +138,14 @@ class _ProfileState extends State<Profile> {
       );
 
   Widget buildEditInterestButtons() => ButtonWidget(
-    text: '   Edit Interest   ',
-    onClicked: () {},
-  );
+        text: '   Edit Interest   ',
+        onClicked: () {},
+      );
 
-   Widget buildLogoutButtons() => ButtonWidget(
-    text: ' Logout ',
-    onClicked: () {},
-  );
+  Widget buildLogoutButtons() => ButtonWidget(
+        text: ' Logout ',
+        onClicked: () {},
+      );
 
   Widget buildCoverImage() => Container(
         color: Colors.purple,

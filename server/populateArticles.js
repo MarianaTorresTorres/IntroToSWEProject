@@ -9,15 +9,31 @@ let YTTopics = {
   economics: "economics stocks|crypto|housing|theory|taxes|micro|macro",
   renewableEnergy: "renewable energy solar|wind|Hydropower|geothermal|biomass",
   technology: "technology Automated|AI|ML|VR|AR|Blockchain|Web3|Quantum|Cloud",
+  artistry:
+    "art drawing|painting|digital|sculpting|photography|film|fashion|theatre|dance",
+  literature:
+    "learn literature philosophy|performance|fiction|poetry|drama|non-fiction|comedy",
+  politics:
+    "learn politics government|international|US|current|elections|history|",
+  religion:
+    "learn religion christianity|judiasm|islam|buddhism|hinduism|spirituality|supernatural|diety",
 };
 
 let newsTopics = {
   economics:
     "economics AND (stocks OR crypto OR housing OR theory OR taxes OR micro OR macro)",
-  renewableenergy:
+  renewableEnergy:
     "renewable energy AND (solar OR wind OR Hydropower OR geothermal OR biomass)",
   technology:
     "technology AND (Automated OR AI OR ML OR VR OR AR OR Blockchain OR Web3 OR Quantum OR Cloud)",
+  artistry:
+    "art AND (drawing OR painting OR digital OR sculpting OR photography OR film OR fashion OR theatre OR dance)",
+  literature:
+    "learn AND literature AND (philosophy OR performance OR fiction OR poetry OR drama OR non-fiction OR comedy)",
+  politics:
+    "learn AND politics AND (government OR international OR US OR current OR elections OR history)",
+  religion:
+    "learn AND religion AND (christianity OR judiasm OR islam OR buddhism OR hinduism OR spirituality OR supernatural OR diety)",
 };
 
 const service = google.youtube({
@@ -33,9 +49,8 @@ function addVideoToDB(video, topic) {
         format: "video"
         title: "${video.snippet.title}"
         author: "${video.snippet.channelTitle}"
-        desc: "${video.snippet.description}"
         url: "https://www.youtube.com/watch?v=${video.id.videoId}"
-        imageUrl: "${video.snippet.thumbnails.default.url}"
+        imageUrl: "${video.snippet.thumbnails.medium.url}"
       }){
         topic
         format
@@ -67,7 +82,6 @@ function addArticleToDB(article, topic) {
         format: "article"
         title: "${article.title}"
         author: "${article.author}"
-        desc: "${article.description}"
         url: "${article.url}"
         imageUrl: "${article.urlToImage}"
       }){
@@ -90,7 +104,7 @@ async function YoutubeAPISearch(topic) {
   const res = await service.search.list(
     {
       part: ["snippet, id"],
-      maxResults: 20,
+      maxResults: 50,
       q: YTTopics[topic],
     },
     (err, res) => {
@@ -108,7 +122,7 @@ function NewsAPISearch(topic) {
     .everything({
       q: newsTopics[topic],
       language: "en",
-      pageSize: 20,
+      pageSize: 50,
       sortBy: "relevancy",
     })
     .then((response) => {
