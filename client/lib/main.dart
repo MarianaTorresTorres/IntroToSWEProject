@@ -1,7 +1,5 @@
-import 'package:client/Screens/forget.dart';
-import 'package:client/Screens/register.dart';
-import 'package:client/Screens/welcome.dart';
-import 'package:client/Screens/login.dart';
+import 'package:client/nav.dart';
+import 'package:client/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 
@@ -11,15 +9,19 @@ class EdYouApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: true,
-      title: 'edYou',
-      theme: ThemeData(
-        primaryColor: HexColor("#E5E5E5"),
-        hintColor: Colors.black,
-        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.indigo)
-            .copyWith(secondary: HexColor("#A8C2EE")),
-      ),
-      home: const Welcome(),
+      debugShowCheckedModeBanner: false,
+      //theme: ThemeData(primaryColor: Color.fromARGB(255, 92, 35, 199)),
+      //home: Scaffold(
+      //    appBar: AppBar(title: Text("Home")),
+      //    body: Center(
+      //      child: Text("Hello!!"),
+      //    ))
+      //title: 'Navigation',
+      //home: Navigation(),
+      title: 'Profile Page',
+      //theme: ThemeData(fontFamily: 'Poppins'),
+      initialRoute: Navigation.routeName,
+      routes: routes,
     );
   }
 }
