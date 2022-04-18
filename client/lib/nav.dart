@@ -1,4 +1,5 @@
 import 'package:client/homepage.dart';
+import 'package:client/interests.dart';
 import 'package:flutter/material.dart';
 import 'package:client/buttons.dart';
 
@@ -139,7 +140,12 @@ class _ProfileState extends State<Profile> {
 
   Widget buildEditInterestButtons() => ButtonWidget(
         text: '   Edit Interest   ',
-        onClicked: () {},
+        onClicked: () {
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (BuildContext context) {
+            return InterestsPage();
+          }));
+        },
       );
 
   Widget buildLogoutButtons() => ButtonWidget(
