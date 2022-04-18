@@ -9,15 +9,31 @@ let YTTopics = {
   economics: "economics stocks|crypto|housing|theory|taxes|micro|macro",
   renewableEnergy: "renewable energy solar|wind|Hydropower|geothermal|biomass",
   technology: "technology Automated|AI|ML|VR|AR|Blockchain|Web3|Quantum|Cloud",
+  artistry:
+    "art drawing|painting|digital|sculpting|photography|film|fashion|theatre|dance",
+  literature:
+    "learn literature philosophy|performance|fiction|poetry|drama|non-fiction|comedy",
+  politics:
+    "learn politics government|international|US|current|elections|history|",
+  religion:
+    "learn religion christianity|judiasm|islam|buddhism|hinduism|spirituality|supernatural|diety",
 };
 
 let newsTopics = {
   economics:
     "economics AND (stocks OR crypto OR housing OR theory OR taxes OR micro OR macro)",
-  renewableenergy:
+  renewableEnergy:
     "renewable energy AND (solar OR wind OR Hydropower OR geothermal OR biomass)",
   technology:
     "technology AND (Automated OR AI OR ML OR VR OR AR OR Blockchain OR Web3 OR Quantum OR Cloud)",
+  artistry:
+    "art AND (drawing OR painting OR digital OR sculpting OR photography OR film OR fashion OR theatre OR dance)",
+  literature:
+    "learn AND literature AND (philosophy OR performance OR fiction OR poetry OR drama OR non-fiction OR comedy)",
+  politics:
+    "learn AND politics AND (government OR international OR US OR current OR elections OR history)",
+  religion:
+    "learn AND religion AND (christianity OR judiasm OR islam OR buddhism OR hinduism OR spirituality OR supernatural OR diety)",
 };
 
 const service = google.youtube({

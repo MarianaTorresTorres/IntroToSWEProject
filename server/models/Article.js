@@ -19,10 +19,6 @@ const articleSchema = new Schema({
     type: String,
     required: true,
   },
-  desc: {
-    type: String,
-    required: false,
-  },
   url: {
     type: String,
     required: true,
@@ -30,6 +26,10 @@ const articleSchema = new Schema({
   imageUrl: {
     type: String,
     required: false,
+  },
+  saved: {
+    type: Boolean,
+    required: true,
   },
 });
 

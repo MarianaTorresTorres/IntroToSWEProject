@@ -81,17 +81,7 @@ module.exports = {
   Mutation: {
     async createArticle(
       _,
-      {
-        createArticleInput: {
-          topic,
-          format,
-          title,
-          author,
-          desc,
-          url,
-          imageUrl,
-        },
-      }
+      { createArticleInput: { topic, format, title, author, url, imageUrl } }
     ) {
       const newArticle = new Article({
         topic,
@@ -101,6 +91,7 @@ module.exports = {
         desc,
         url,
         imageUrl,
+        saved: false,
       });
 
       await newArticle.save();

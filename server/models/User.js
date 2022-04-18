@@ -23,12 +23,23 @@ const userSchema = new Schema({
     type: Boolean,
     default: false,
   },
-  interests: [{
-    type: String,
-    unique: true,
-    lowercase: true,
-  }],
+  interests: [
+    {
+      type: String,
+      unique: true,
+      lowercase: true,
+    },
+  ],
+  savedArticles: [
+    {
+      topic: String,
+      format: String,
+      title: String,
+      author: String,
+      url: String,
+      imageUrl: String,
+    },
+  ],
 });
 
 module.exports = model("User", userSchema);
-

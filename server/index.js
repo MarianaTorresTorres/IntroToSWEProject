@@ -13,7 +13,7 @@ const schedule = require("node-schedule");
 const populate = require("./populateArticles.js");
 
 // job is "0 */12 * * *"
-const job = schedule.scheduleJob("0 */12 * * *", () => {
+const job = schedule.scheduleJob("0 */1 * * * *", () => {
   populate.populateDataBase();
 });
 

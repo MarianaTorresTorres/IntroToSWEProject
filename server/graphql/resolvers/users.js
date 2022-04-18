@@ -4,7 +4,10 @@ const { UserInputError } = require("apollo-server");
 const nodemailer = require("nodemailer");
 const nodemailerSendgrid = require("nodemailer-sendgrid");
 
-const { validateRegisterInput, validateLoginInput } = require("../../util/validators");
+const {
+  validateRegisterInput,
+  validateLoginInput,
+} = require("../../util/validators");
 const User = require("../../models/User.js");
 
 require("dotenv").config();
@@ -39,18 +42,19 @@ module.exports = {
         throw new Error(err);
       }
     },
+    async getSavedArticles(_, { userId }) {
+      try {
+        const user = await User.findById(userId);
+        return user.savedArticles;
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
   },
   Mutation: {
     async editUserProfile(
       _,
-      {
-        editUserProfileInput: {
-          username,
-          email,
-          passwords,
-          interests,
-        },
-      }
+      { editUserProfileInput: { username, email, passwords, interests } }
     ) {
       try {
         const user = await User.find({ username });
@@ -156,20 +160,20 @@ module.exports = {
     async login(_, { username, password }) {
       /*validate login input*/
       const { errors, valid } = validateLoginInput(username, password);
-      if(!valid){
-        throw new UserInputError("Errors" , { errors });
+      if (!valid) {
+        throw new UserInputError("Errors", { errors });
       }
       /*Check Credentials*/
       const user = await User.findOne({ username });
-      if(!user){
-        errors.general = 'User not found';
-        throw new UserInputError("Wrong credentials" , { errors });
+      if (!user) {
+        errors.general = "User not found";
+        throw new UserInputError("Wrong credentials", { errors });
       }
 
       const passwordMatch = await bcrypt.compare(password, user.password);
-      if(!passwordMatch){
-        errors.general = 'Wrong credentials';
-        throw new UserInputError("Wrong credentials" , { errors });
+      if (!passwordMatch) {
+        errors.general = "Wrong credentials";
+        throw new UserInputError("Wrong credentials", { errors });
       }
 
       const token = jwt.sign(
@@ -186,6 +190,44 @@ module.exports = {
         id: user._id,
         token,
       };
+    },
+    async adjustSavedArticles(
+      _,
+      {
+        saveArticleInput: {
+          username,
+          topic,
+          format,
+          title,
+          author,
+          url,
+          imageUrl,
+          saved,
+        },
+      }
+    ) {
+      const user = await User.findOne({ username });
+      let savedarticles = user.savedArticles;
+      if (saved) {
+        for (let i = 0; i < savedarticles.length; i++) {
+          if (savedarticles[i].title === title) {
+            savedarticles.splice(i, 1);
+            break;
+          }
+        }
+      } else {
+        savedarticles.push({ topic, format, title, author, url, imageUrl });
+      }
+      const updatedUser = await User.findOneAndUpdate(
+        { username },
+        {
+          savedArticles: savedarticles,
+        },
+        {
+          new: true,
+        }
+      );
+      return updatedUser;
     },
   },
 };
