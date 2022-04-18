@@ -4,8 +4,10 @@ import 'package:hexcolor/hexcolor.dart';
 
 class RegField extends StatelessWidget {
   final String title;
+  final bool secret;
 
-  const RegField({required this.title, Key? key}) : super(key: key);
+  const RegField({required this.title, Key? key, required this.secret})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -22,6 +24,9 @@ class RegField extends StatelessWidget {
               //  when the TextFormField in focused
             ),
             border: const UnderlineInputBorder()),
+        obscureText: secret,
+        enableSuggestions: !secret,
+        autocorrect: false,
         style: const TextStyle(
           fontSize: 20,
         ),
@@ -81,10 +86,11 @@ class RegisterState extends State<RegisterPage> {
                       key: _formKey,
                       child: Column(
                         children: <Widget>[
-                          const RegField(title: "Username"),
-                          const RegField(title: "Email"),
-                          const RegField(title: "Password"),
-                          const RegField(title: "Confirm Password"),
+                          const RegField(title: "Username", secret: false),
+                          const RegField(title: "Email", secret: false),
+                          const RegField(title: "Password", secret: true),
+                          const RegField(
+                              title: "Confirm Password", secret: true),
                           const SizedBox(height: 50.0),
                           SizedBox(
                               width: 200, // <-- Your width
