@@ -35,7 +35,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_svg: ^0.17.4
   hexcolor: ^2.0.6
-  graphql_flutter: ^4.0.1
+  graphql_flutter: ^5.1.0
+  url_launcher: ^6.0.20
 
 dev_dependencies:
   flutter_test:
@@ -57,8 +58,6 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
-
-  # To add assets to your application, add an assets section, like this:
   assets:
     - assets/
 

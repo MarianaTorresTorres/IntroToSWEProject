@@ -9,6 +9,7 @@ module.exports = gql`
     password: String!
     createdAt: String!
     interests: [String]
+    savedArticles: [Article]
   }
 
   type Article {
@@ -16,7 +17,6 @@ module.exports = gql`
     format: String!
     title: String!
     author: String!
-    desc: String!
     url: String!
     imageUrl: String
   }
@@ -40,9 +40,19 @@ module.exports = gql`
     format: String!
     title: String!
     author: String!
-    desc: String
     url: String!
     imageUrl: String
+  }
+
+  input saveArticleInput {
+    username: String!
+    topic: String!
+    format: String!
+    title: String!
+    author: String!
+    url: String!
+    imageUrl: String
+    saved: Boolean!
   }
 
   type Query {
@@ -60,6 +70,7 @@ module.exports = gql`
     register(registerInput: RegisterInput): User!
     login(username: String!, password: String!): User!
     editUserProfile(editUserProfileInput: editUserProfileInput): User!
+    adjustSavedArticles(saveArticleInput: saveArticleInput): User!
     createArticle(createArticleInput: createArticleInput): Article
     deleteArticles: [Article]
   }

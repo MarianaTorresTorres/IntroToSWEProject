@@ -19,10 +19,6 @@ const articleSchema = new Schema({
     type: String,
     required: true,
   },
-  desc: {
-    type: String,
-    required: false,
-  },
   url: {
     type: String,
     required: true,

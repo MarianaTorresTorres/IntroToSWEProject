@@ -12,7 +12,9 @@ const resolvers = require("./graphql/resolvers");
 const schedule = require("node-schedule");
 const populate = require("./populateArticles.js");
 
+// job is "0 */12 * * *"
 const job = schedule.scheduleJob("0 */12 * * *", () => {
+  console.log("populate");
   populate.populateDataBase();
 });
 
@@ -38,4 +40,3 @@ mongoose
   .catch((err) => {
     console.error(err);
   });
-
