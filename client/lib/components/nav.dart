@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:client/buttons.dart';
+import 'package:client/components/buttons.dart';
+import './../pages/saved.dart';
 
 class Navigation extends StatefulWidget {
+  Navigation({Key? key}) : super(key: key);
+
   @override
   _NavigationState createState() => _NavigationState();
   static String routeName = '/navigation';
 }
 
 class _NavigationState extends State<Navigation> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
 
-  List<Widget> _widgetOptions = [Saved(), Home(), Profile()];
+  final List<Widget> _widgetOptions = [SavedPage(), Home(), Profile()];
 
   void _onItemTap(int index) {
     setState(() {
@@ -48,24 +51,9 @@ class _NavigationState extends State<Navigation> {
   }
 }
 
-class Saved extends StatefulWidget {
-  @override
-  _SavedState createState() => _SavedState();
-}
-
-class _SavedState extends State<Saved> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.lime,
-      child: const Center(
-        child: Text('Saved'),
-      ),
-    );
-  }
-}
-
 class Home extends StatefulWidget {
+  const Home({Key? key}) : super(key: key);
+
   @override
   _HomeState createState() => _HomeState();
 }
@@ -83,6 +71,8 @@ class _HomeState extends State<Home> {
 }
 
 class Profile extends StatefulWidget {
+  const Profile({Key? key}) : super(key: key);
+
   @override
   _ProfileState createState() => _ProfileState();
 }
@@ -127,13 +117,13 @@ class _ProfileState extends State<Profile> {
   }
 
   Widget buildContent() => Column(
-        children: [
-          const SizedBox(height: 10),
+        children: const [
+          SizedBox(height: 10),
           Text(
             'Yair Temkin',
             style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10),
           Text(
             'yairrrrrrrrrr@gmail.com',
             style: TextStyle(fontSize: 20, color: Colors.black),
@@ -142,19 +132,19 @@ class _ProfileState extends State<Profile> {
       );
 
   Widget buildEditInterestButtons() => ButtonWidget(
-    text: '   Edit Interest   ',
-    onClicked: () {},
-  );
+        text: '   Edit Interest   ',
+        onClicked: () {},
+      );
 
-   Widget buildLogoutButtons() => ButtonWidget(
-    text: ' Logout ',
-    onClicked: () {},
-  );
+  Widget buildLogoutButtons() => ButtonWidget(
+        text: ' Logout ',
+        onClicked: () {},
+      );
 
   Widget buildCoverImage() => Container(
         color: Colors.purple,
         child: Image.asset(
-          'assets/background.jpeg',
+          'assets/shortBack.jpeg',
           width: double.infinity,
           height: coverHeight,
           fit: BoxFit.cover,
@@ -164,6 +154,6 @@ class _ProfileState extends State<Profile> {
   Widget buildProfileImage() => CircleAvatar(
         radius: profileHeight / 2,
         backgroundColor: Colors.grey.shade800,
-        backgroundImage: AssetImage('assets/user_default.png'),
+        backgroundImage: const AssetImage('assets/user_default.png'),
       );
 }

@@ -1,4 +1,4 @@
-import 'package:client/nav.dart';
+import 'package:client/components/nav.dart';
 import 'package:client/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -32,9 +32,9 @@ class EdYou extends StatelessWidget {
         colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.indigo)
             .copyWith(secondary: HexColor("#A8C2EE")),
       ),
-      // initialRoute: Navigation.routeName,
-      // routes: routes,
-      home: const RegisterPage(),
+      initialRoute: Navigation.routeName,
+      routes: routes,
+      //home: const RegisterPage(),
     );
   }
 }

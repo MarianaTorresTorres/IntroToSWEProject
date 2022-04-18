@@ -67,7 +67,7 @@ class RegisterState extends State<RegisterPage> {
             width: MediaQuery.of(context).size.width,
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage("assets/back.png"),
+                image: AssetImage("assets/logRegBack.png"),
                 fit: BoxFit.cover,
               ),
             ),

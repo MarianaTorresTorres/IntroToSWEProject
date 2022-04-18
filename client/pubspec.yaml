@@ -36,6 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   hexcolor: ^2.0.6
   graphql_flutter: ^5.1.0
+  url_launcher: ^6.0.20
 
 dev_dependencies:
   flutter_test:
