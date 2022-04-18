@@ -88,10 +88,8 @@ module.exports = {
         format,
         title,
         author,
-        desc,
         url,
         imageUrl,
-        saved: false,
       });
 
       await newArticle.save();

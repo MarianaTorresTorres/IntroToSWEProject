@@ -27,10 +27,6 @@ const articleSchema = new Schema({
     type: String,
     required: false,
   },
-  saved: {
-    type: Boolean,
-    required: true,
-  },
 });
 
 module.exports = model("Article", articleSchema);

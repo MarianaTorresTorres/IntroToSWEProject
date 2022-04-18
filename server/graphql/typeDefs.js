@@ -19,7 +19,6 @@ module.exports = gql`
     author: String!
     url: String!
     imageUrl: String
-    saved: Boolean!
   }
 
   input RegisterInput {

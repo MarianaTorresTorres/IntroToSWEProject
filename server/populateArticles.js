@@ -49,7 +49,6 @@ function addVideoToDB(video, topic) {
         format: "video"
         title: "${video.snippet.title}"
         author: "${video.snippet.channelTitle}"
-        desc: "${video.snippet.description}"
         url: "https://www.youtube.com/watch?v=${video.id.videoId}"
         imageUrl: "${video.snippet.thumbnails.medium.url}"
       }){
@@ -83,7 +82,6 @@ function addArticleToDB(article, topic) {
         format: "article"
         title: "${article.title}"
         author: "${article.author}"
-        desc: "${article.description}"
         url: "${article.url}"
         imageUrl: "${article.urlToImage}"
       }){
@@ -106,7 +104,7 @@ async function YoutubeAPISearch(topic) {
   const res = await service.search.list(
     {
       part: ["snippet, id"],
-      maxResults: 20,
+      maxResults: 50,
       q: YTTopics[topic],
     },
     (err, res) => {
@@ -124,7 +122,7 @@ function NewsAPISearch(topic) {
     .everything({
       q: newsTopics[topic],
       language: "en",
-      pageSize: 20,
+      pageSize: 50,
       sortBy: "relevancy",
     })
     .then((response) => {
