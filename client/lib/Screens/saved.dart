@@ -64,10 +64,10 @@ class SavedPageState extends State<SavedPage> {
             IconButton(
               iconSize: 36,
               icon: Icon(
-                  alreadySaved
+                  !alreadySaved
                       ? Icons.bookmark
                       : Icons.bookmark_border_outlined,
-                  color: alreadySaved ? Colors.amber : null),
+                  color: !alreadySaved ? Colors.amber : null),
               onPressed: () {
                 /*Mutation({
                   'format': article['format'],
@@ -99,6 +99,7 @@ class SavedPageState extends State<SavedPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         centerTitle: true,
+        automaticallyImplyLeading: false,
         flexibleSpace: Container(
           decoration: const BoxDecoration(
               image: DecorationImage(
@@ -120,7 +121,7 @@ class SavedPageState extends State<SavedPage> {
                 child: CircularProgressIndicator(),
               );
             }
-            articleList = result.data?['getArticles'];
+            articleList = result.data?['getUser']['savedArticles'];
             return Scaffold(
               body: Container(
                 decoration: const BoxDecoration(
@@ -141,13 +142,20 @@ class SavedPageState extends State<SavedPage> {
 
 const getUserArticlesGraphQL = """
   query {
-    getArticles {
-      format
-      topic
-      author
-      title
-      url
-      imageUrl
+    getUser(userId: "6244aa90a9289e13d10be99c"){
+      id
+      username
+      email
+      password
+      interests
+      savedArticles {
+        format
+        topic
+        author
+        title
+        url
+        imageUrl
+      }
     }
   }
 """;

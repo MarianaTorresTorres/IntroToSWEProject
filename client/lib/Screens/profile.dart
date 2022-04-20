@@ -1,5 +1,7 @@
+import 'package:client/Screens/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:client/buttons.dart';
+import 'interests.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -49,12 +51,12 @@ class _ProfilePageState extends State<ProfilePage> {
         children: const [
           SizedBox(height: 10),
           Text(
-            'Yair Temkin',
+            'demouser',
             style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 10),
           Text(
-            'yairrrrrrrrrr@gmail.com',
+            'demouser@gmail.com',
             style: TextStyle(fontSize: 20, color: Colors.black),
           ),
         ],
@@ -62,12 +64,22 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget buildEditInterestButtons() => ButtonWidget(
         text: '   Edit Interest   ',
-        onClicked: () {},
+        onClicked: () {
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (BuildContext context) {
+            return InterestsPage();
+          }));
+        },
       );
 
   Widget buildLogoutButtons() => ButtonWidget(
         text: ' Logout ',
-        onClicked: () {},
+        onClicked: () {
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (BuildContext context) {
+            return Welcome();
+          }));
+        },
       );
 
   Widget buildCoverImage() => Container(
