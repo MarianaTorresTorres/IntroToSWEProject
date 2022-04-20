@@ -1,27 +1,73 @@
-import 'package:client/homepage.dart';
-import 'package:client/interests.dart';
+import 'package:client/Screens/homepage.dart';
 import 'package:flutter/material.dart';
-import 'package:client/buttons.dart';
+import "Screens/homepage.dart";
+import "Screens/saved.dart";
+import "Screens/profile.dart";
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Navigation extends StatefulWidget {
   @override
   _NavigationState createState() => _NavigationState();
-  static String routeName = '/navigation';
+  static String routeName = '/welcome';
+}
+
+Widget HomePageSetUp() {
+  return Scaffold(
+      body: Query(
+          options: QueryOptions(
+            document: gql(getUserArticlesGraphQL),
+          ),
+          builder: (QueryResult result, {fetchMore, refetch}) {
+            if (result.hasException) {
+              return Text(result.exception.toString());
+            }
+
+            if (result.isLoading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            final articleList = result.data?['getArticlesForUser'];
+            print(articleList);
+            return HomePage();
+          }));
 }
 
 class _NavigationState extends State<Navigation> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 2;
 
-  List<Widget> _widgetOptions = [Saved(), Home(), Profile()];
-
+  final List<Widget> _widgetOptions = [SavedPage(), HomePage(), ProfilePage()];
   void _onItemTap(int index) {
     setState(() {
       _selectedIndex = index;
     });
   }
 
+  dynamic user;
+
+  void updateUser() {
+    Query(
+        options: QueryOptions(
+          document: gql(getUserGraphQL),
+        ),
+        builder: (QueryResult result, {fetchMore, refetch}) {
+          if (result.hasException) {
+            return Text(result.exception.toString());
+          }
+
+          if (result.isLoading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          user = result.data?['getUser'];
+          return Text(user.toString());
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
+    updateUser();
     return Scaffold(
       body: IndexedStack(children: [
         Center(
@@ -50,122 +96,35 @@ class _NavigationState extends State<Navigation> {
   }
 }
 
-class Saved extends StatefulWidget {
-  @override
-  _SavedState createState() => _SavedState();
-}
-
-class _SavedState extends State<Saved> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.lime,
-      child: const Center(
-        child: Text('Saved'),
-      ),
-    );
+const getUserGraphQL = """
+  query {
+    getUser(userId: "6244aa90a9289e13d10be99c"){
+      id
+      username
+      email
+      password
+      interests
+      savedArticles {
+        format
+        topic
+        author
+        title
+        url
+        imageUrl
+      }
+    }
   }
-}
+""";
 
-class Home extends StatefulWidget {
-  @override
-  _HomeState createState() => _HomeState();
-}
-
-class _HomeState extends State<Home> {
-  @override
-  Widget build(BuildContext context) {
-    return HomePage();
+const getUserArticlesGraphQL = """
+  query {
+    getArticlesForUser(userId: "6244aa90a9289e13d10be99c"){
+      format
+      topic
+      author
+      title
+      url
+      imageUrl
+    }
   }
-}
-
-class Profile extends StatefulWidget {
-  @override
-  _ProfileState createState() => _ProfileState();
-}
-
-class _ProfileState extends State<Profile> {
-  final double coverHeight = 200;
-  final double profileHeight = 120;
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: ListView(
-        padding: EdgeInsets.zero,
-        children: <Widget>[
-          buildTop(),
-          buildContent(),
-          const SizedBox(height: 80),
-          Center(child: buildEditInterestButtons()),
-          const SizedBox(height: 80),
-          Center(child: buildLogoutButtons()),
-        ],
-      ),
-    );
-  }
-
-  Widget buildTop() {
-    final top = coverHeight - profileHeight / 2;
-    final bottom = profileHeight / 2;
-    return Stack(
-      clipBehavior: Clip.none,
-      alignment: Alignment.center,
-      children: [
-        Container(
-          margin: EdgeInsets.only(bottom: bottom),
-          child: buildCoverImage(),
-        ),
-        Positioned(
-          top: top,
-          child: buildProfileImage(),
-        ),
-      ],
-    );
-  }
-
-  Widget buildContent() => Column(
-        children: [
-          const SizedBox(height: 10),
-          Text(
-            'Yair Temkin',
-            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            'yairrrrrrrrrr@gmail.com',
-            style: TextStyle(fontSize: 20, color: Colors.black),
-          ),
-        ],
-      );
-
-  Widget buildEditInterestButtons() => ButtonWidget(
-        text: '   Edit Interest   ',
-        onClicked: () {
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (BuildContext context) {
-            return InterestsPage();
-          }));
-        },
-      );
-
-  Widget buildLogoutButtons() => ButtonWidget(
-        text: ' Logout ',
-        onClicked: () {},
-      );
-
-  Widget buildCoverImage() => Container(
-        color: Colors.purple,
-        child: Image.asset(
-          'assets/background.jpeg',
-          width: double.infinity,
-          height: coverHeight,
-          fit: BoxFit.cover,
-        ),
-      );
-
-  Widget buildProfileImage() => CircleAvatar(
-        radius: profileHeight / 2,
-        backgroundColor: Colors.grey.shade800,
-        backgroundImage: AssetImage('assets/user_default.png'),
-      );
-}
+""";

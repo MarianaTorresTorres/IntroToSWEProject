@@ -99,7 +99,7 @@ class HomePageState extends State<HomePage> {
                         savedArticles.add(article['title']);
                       }
                     });
-                    runMutation({
+                    /*runMutation({
                       "saveArticleInput": {
                         'topic': article['topic'],
                         'format': article['format'],
@@ -109,7 +109,7 @@ class HomePageState extends State<HomePage> {
                         'imageUrl': article['imageUrl'],
                         'saved': alreadySaved,
                       }
-                    });
+                    });*/
                   },
                 )
               ])
@@ -126,6 +126,7 @@ class HomePageState extends State<HomePage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         centerTitle: true,
+        automaticallyImplyLeading: false,
         flexibleSpace: Container(
           decoration: const BoxDecoration(
               image: DecorationImage(
@@ -149,18 +150,26 @@ class HomePageState extends State<HomePage> {
             }
             articleList = result.data?['getArticlesForUser'];
             return Scaffold(
-              body: Container(
-                decoration: const BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage('assets/background.jpeg'),
-                        fit: BoxFit.fill)),
-                child: ListView.builder(
-                    itemCount: articleList.length,
-                    itemBuilder: (context, index) {
-                      return buildCard(index);
-                    }),
-              ),
-            );
+                body: RefreshIndicator(
+                    child: Container(
+                      decoration: const BoxDecoration(
+                          image: DecorationImage(
+                              image: AssetImage('assets/background.jpeg'),
+                              fit: BoxFit.fill)),
+                      child: ListView.builder(
+                          itemCount: articleList.length,
+                          itemBuilder: (context, index) {
+                            return buildCard(index);
+                          }),
+                    ),
+                    onRefresh: () {
+                      return Future.delayed(
+                        Duration(seconds: 1),
+                        () {
+                          setState() {}
+                        },
+                      );
+                    }));
           }),
     );
   }
