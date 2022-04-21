@@ -77,11 +77,20 @@ class RegisterState extends State<RegisterPage> {
             document: gql(registerUserGraphQL),
           ),
           builder: (RunMutation runMutation, QueryResult? result) {
+            dynamic errs;
             if (result == null) {
               return const Text("result = null");
             }
             if (result.hasException) {
-              return Text(result.exception.toString());
+              if (result.hasException) {
+                try {
+                  String? errors = result
+                      .exception?.graphqlErrors[0].extensions?.values.first
+                      .toString();
+                  errors = errors?.substring(1, errors.length - 1);
+                  errs = errors?.split(",");
+                } catch (e) {}
+              }
             }
 
             if (result.isLoading) {
@@ -89,6 +98,7 @@ class RegisterState extends State<RegisterPage> {
                 child: CircularProgressIndicator(),
               );
             }
+
             return Container(
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
@@ -154,7 +164,9 @@ class RegisterState extends State<RegisterPage> {
                                         "password": userData[2],
                                         "confirmPassword": userData[3],
                                       });
-                                      if (!result.hasException) {
+                                      if (!result.isLoading &&
+                                          !result.hasException &&
+                                          result.data != null) {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(

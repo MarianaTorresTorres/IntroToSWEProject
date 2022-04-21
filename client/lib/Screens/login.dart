@@ -74,18 +74,33 @@ class LoginBody extends State<Login> {
             document: gql(loginUserGraphQL),
           ),
           builder: (RunMutation runMutation, QueryResult? result) {
+            dynamic errs;
             if (result == null) {
               return const Text("result = null");
             }
             if (result.hasException) {
-              return Text(result.exception.toString());
+              try {
+                String? errors = result
+                    .exception?.graphqlErrors[0].extensions?.values.first
+                    .toString();
+                errors = errors?.substring(1, errors.length - 1);
+                errs = errors?.split(",");
+              } catch (e) {}
             }
-
             if (result.isLoading) {
               return const Center(
                 child: CircularProgressIndicator(),
               );
             }
+            if (!result.isLoading &&
+                !result.hasException &&
+                result.data != null) {
+              dynamic user = result.data?['login'];
+              return Navigation(
+                userData: user,
+              );
+            }
+
             return Container(
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
@@ -140,19 +155,20 @@ class LoginBody extends State<Login> {
                                         style: TextStyle(fontSize: 20)),
                                     onPressed: () {
                                       runMutation({
-                                        "username": userData[0],
-                                        "password": userData[1],
+                                        "username": userInput[0],
+                                        "password": userInput[1],
                                       });
-                                      if (!result.hasException) {
-                                        /*Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  Navigation()),
-                                        );*/
-                                      }
                                     },
                                   )),
+                              result.hasException
+                                  ? AlertDialog(
+                                      shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(32.0))),
+                                      title: Text(errs.toString().substring(
+                                          1, errs.toString().length - 1)),
+                                    )
+                                  : const Text(""),
                             ],
                           ),
                         ),
@@ -207,6 +223,15 @@ const loginUserGraphQL = """
       password
       email
       id
+      interests
+      savedArticles{
+        format
+        topic
+        author
+        title
+        url
+        imageUrl
+      }
     }
   }
 """;
