@@ -47,7 +47,7 @@ module.exports = {
         const user = await User.findById(userId);
         if (user) {
           let articles = [];
-          let count = 10 / user.interests.length;
+          let count = 40 / user.interests.length;
           for (const interest of user.interests) {
             const articlesOfTopic = await Article.find({
               topic: interest,

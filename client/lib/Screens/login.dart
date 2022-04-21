@@ -158,6 +158,8 @@ class LoginBody extends State<Login> {
                                         "username": userInput[0],
                                         "password": userInput[1],
                                       });
+                                      userInput[0] = "";
+                                      userInput[1] = "";
                                     },
                                   )),
                               result.hasException
