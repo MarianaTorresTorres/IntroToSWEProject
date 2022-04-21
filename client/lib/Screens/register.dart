@@ -164,6 +164,10 @@ class RegisterState extends State<RegisterPage> {
                                         "password": userData[2],
                                         "confirmPassword": userData[3],
                                       });
+                                      userData[0] = "";
+                                      userData[1] = "";
+                                      userData[2] = "";
+                                      userData[3] = "";
                                       if (!result.isLoading &&
                                           !result.hasException &&
                                           result.data != null) {

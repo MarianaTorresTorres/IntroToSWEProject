@@ -15,7 +15,7 @@ class Navigation extends StatefulWidget {
 }
 
 class _NavigationState extends State<Navigation> {
-  int _selectedIndex = 2;
+  int _selectedIndex = 1;
   dynamic userData;
   _NavigationState({this.userData});
   //final List<Widget> _widgetOptions = [SavedPage(), HomePage(), ProfilePage()];
