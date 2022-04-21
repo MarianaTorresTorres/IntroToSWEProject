@@ -3,12 +3,16 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SavedPage extends StatefulWidget {
+  final dynamic userData;
+  const SavedPage({required this.userData});
   @override
-  SavedPageState createState() => SavedPageState();
+  SavedPageState createState() => SavedPageState(user: userData);
 }
 
 class SavedPageState extends State<SavedPage> {
-  void openArticle() {}
+  dynamic user;
+  SavedPageState({this.user});
+
   var articleList = [];
   final savedArticles = Set<String>();
 
@@ -21,75 +25,100 @@ class SavedPageState extends State<SavedPage> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
       ),
-      child: Column(
-        children: [
-          Ink.image(
-            image: NetworkImage(
-              article['imageUrl'],
-            ),
-            height: 240,
-            fit: BoxFit.cover,
+      child: Mutation(
+          options: MutationOptions(
+            document: gql(adjustavedArticlesGraphQL),
+            onCompleted: (dynamic resultData) {
+              print(resultData);
+            },
           ),
-          const SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.all(16).copyWith(bottom: 0),
-            child: Text(
-              article['title'].trim(),
-              style: const TextStyle(fontSize: 16),
-            ),
-          ),
-          article['author'] != "N/A"
-              ? Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.all(16).copyWith(bottom: 0, top: 4),
-                    child: Text(
-                      "By: " + article['author'].toString(),
-                      style: const TextStyle(fontSize: 14),
-                    ),
+          builder: (
+            RunMutation runMutation,
+            QueryResult? result,
+          ) {
+            if (result == null) {
+              return const Text("result = null");
+            }
+            if (result.hasException) {
+              return Text(result.exception.toString());
+            }
+
+            if (result.isLoading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            return Column(
+              children: [
+                Ink.image(
+                  image: NetworkImage(
+                    article['imageUrl'],
                   ),
-                )
-              : Padding(
-                  padding: const EdgeInsets.all(0).copyWith(bottom: 0),
+                  height: 240,
+                  fit: BoxFit.cover,
                 ),
-          ButtonBar(alignment: MainAxisAlignment.end, children: [
-            IconButton(
-              iconSize: 36,
-              icon: const Icon(Icons.open_in_new),
-              onPressed: () async {
-                await launch(article['url']);
-              },
-            ),
-            IconButton(
-              iconSize: 36,
-              icon: Icon(
-                  !alreadySaved
-                      ? Icons.bookmark
-                      : Icons.bookmark_border_outlined,
-                  color: !alreadySaved ? Colors.amber : null),
-              onPressed: () {
-                /*Mutation({
-                  'format': article['format'],
-                  'topic': article['topic'],
-                  'author': article['author'],
-                  'title': article['title'],
-                  'url': article['url'],
-                  'imageUrl': article['imageUrl'],
-                  'saved': alreadySaved
-                });*/
-                setState(() {
-                  if (alreadySaved) {
-                    savedArticles.remove(article['title']);
-                  } else {
-                    savedArticles.add(article['title']);
-                  }
-                });
-              },
-            )
-          ])
-        ],
-      ),
+                const SizedBox(height: 8),
+                Padding(
+                  padding: const EdgeInsets.all(16).copyWith(bottom: 0),
+                  child: Text(
+                    article['title'].trim(),
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ),
+                article['author'] != "N/A"
+                    ? Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16)
+                              .copyWith(bottom: 0, top: 4),
+                          child: Text(
+                            "By: " + article['author'].toString(),
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                        ),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.all(0).copyWith(bottom: 0),
+                      ),
+                ButtonBar(alignment: MainAxisAlignment.end, children: [
+                  IconButton(
+                    iconSize: 36,
+                    icon: const Icon(Icons.open_in_new),
+                    onPressed: () async {
+                      await launch(article['url']);
+                    },
+                  ),
+                  IconButton(
+                    iconSize: 36,
+                    icon: Icon(
+                        !alreadySaved
+                            ? Icons.bookmark
+                            : Icons.bookmark_border_outlined,
+                        color: !alreadySaved ? Colors.amber : null),
+                    onPressed: () {
+                      runMutation({
+                        'username': user['username'],
+                        'topic': article['topic'],
+                        'format': article['format'],
+                        'title': article['title'],
+                        'author': article['author'],
+                        'url': article['url'],
+                        'imageUrl': article['imageUrl'],
+                        'saved': alreadySaved,
+                      });
+                      setState(() {
+                        if (alreadySaved) {
+                          savedArticles.remove(article['title']);
+                        } else {
+                          savedArticles.add(article['title']);
+                        }
+                      });
+                    },
+                  )
+                ])
+              ],
+            );
+          }),
     );
   }
 
@@ -108,9 +137,10 @@ class SavedPageState extends State<SavedPage> {
         ),
       ),
       body: Query(
-          options: QueryOptions(
-            document: gql(getUserArticlesGraphQL),
-          ),
+          options:
+              QueryOptions(document: gql(getUserArticlesGraphQL), variables: {
+            'userId': user['id'],
+          }),
           builder: (QueryResult result, {fetchMore, refetch}) {
             if (result.hasException) {
               return Text(result.exception.toString());
@@ -141,13 +171,8 @@ class SavedPageState extends State<SavedPage> {
 }
 
 const getUserArticlesGraphQL = """
-  query {
-    getUser(userId: "6244aa90a9289e13d10be99c"){
-      id
-      username
-      email
-      password
-      interests
+  query (\$userId: ID!){
+    getUser(userId: \$userId){
       savedArticles {
         format
         topic
@@ -161,11 +186,9 @@ const getUserArticlesGraphQL = """
 """;
 
 const adjustavedArticlesGraphQL = """
-  mutation (\$topic: String!, \$format: String!, \$title: String!,
-    \$author: String!, \$url: String!, \$imageUrl: String!, \$saved: Boolean){
-    adjustSavedArticles(saveArticleInput:
-    {
-      username: "demouser"
+  mutation (\$username: String!, \$format: String!, \$topic: String!, \$title: String!, \$author: String!, \$url: String!, \$imageUrl: String!, \$saved: Boolean!){
+    adjustSavedArticles(saveArticleInput: {
+      username: \$username
       topic: \$topic
       format: \$format
       title: \$title
@@ -173,10 +196,11 @@ const adjustavedArticlesGraphQL = """
       url: \$url
       imageUrl: \$imageUrl
       saved: \$saved
-    })
-  }{
-    savedArticles{
-      title
+    }){
+      username
+      savedArticles{
+        title
+        }
+      }
     }
-  }
 """;

@@ -4,13 +4,17 @@ import 'package:client/buttons.dart';
 import 'interests.dart';
 
 class ProfilePage extends StatefulWidget {
+  final dynamic user;
+  const ProfilePage({required this.user});
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  _ProfilePageState createState() => _ProfilePageState(user: user);
 }
 
 class _ProfilePageState extends State<ProfilePage> {
   final double coverHeight = 200;
   final double profileHeight = 120;
+  final dynamic user;
+  _ProfilePageState({this.user});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,16 +52,16 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget buildContent() => Column(
-        children: const [
-          SizedBox(height: 10),
+        children: [
+          const SizedBox(height: 10),
           Text(
-            'demouser',
-            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            user['username'].toString(),
+            style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Text(
-            'demouser@gmail.com',
-            style: TextStyle(fontSize: 20, color: Colors.black),
+            user['email'].toString(),
+            style: const TextStyle(fontSize: 20, color: Colors.black),
           ),
         ],
       );
@@ -67,7 +71,9 @@ class _ProfilePageState extends State<ProfilePage> {
         onClicked: () {
           Navigator.of(context)
               .push(MaterialPageRoute(builder: (BuildContext context) {
-            return InterestsPage();
+            return InterestsPage(
+              userData: user,
+            );
           }));
         },
       );

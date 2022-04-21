@@ -3,17 +3,22 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
+  final dynamic userData;
+  const HomePage({required this.userData});
   @override
-  HomePageState createState() => HomePageState();
+  HomePageState createState() => HomePageState(user: userData);
 }
 
 class HomePageState extends State<HomePage> {
-  void openArticle() {}
+  dynamic user;
+  HomePageState({this.user});
+
   var articleList = [];
   final savedArticles = Set<String>();
 
   Widget buildCard(final index) {
     final article = articleList[index];
+    if (article == null) return Text("");
     final alreadySaved = savedArticles.contains(article['title']);
     return Card(
       margin: const EdgeInsets.all(16),
@@ -99,17 +104,17 @@ class HomePageState extends State<HomePage> {
                         savedArticles.add(article['title']);
                       }
                     });
-                    /*runMutation({
-                      "saveArticleInput": {
-                        'topic': article['topic'],
-                        'format': article['format'],
-                        'title': article['title'],
-                        'author': article['author'],
-                        'url': article['url'],
-                        'imageUrl': article['imageUrl'],
-                        'saved': alreadySaved,
-                      }
-                    });*/
+                    runMutation({
+                      'username': user['username'],
+                      'topic': article['topic'],
+                      'format': article['format'],
+                      'title': article['title'],
+                      'author': article['author'],
+                      'url': article['url'],
+                      'imageUrl': article['imageUrl'],
+                      'saved': alreadySaved,
+                    });
+                    //user = result.data?['user'];
                   },
                 )
               ])
@@ -122,6 +127,7 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    //return Text(user["id"].toString());
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -137,8 +143,12 @@ class HomePageState extends State<HomePage> {
       body: Query(
           options: QueryOptions(
             document: gql(getUserArticlesGraphQL),
+            variables: {
+              'userId': user["id"],
+            },
           ),
-          builder: (QueryResult result, {fetchMore, refetch}) {
+          builder: (QueryResult result,
+              {VoidCallback? refetch, FetchMore? fetchMore}) {
             if (result.hasException) {
               return Text(result.exception.toString());
             }
@@ -166,7 +176,14 @@ class HomePageState extends State<HomePage> {
                       return Future.delayed(
                         Duration(seconds: 1),
                         () {
-                          setState() {}
+                          setState() {
+                            articleList.clear();
+                            fetchMore!(FetchMoreOptions(updateQuery:
+                                (previousResultData, fetchMoreResultData) {
+                              articleList =
+                                  fetchMoreResultData?['getArticlesForUser'];
+                            }));
+                          }
                         },
                       );
                     }));
@@ -176,8 +193,8 @@ class HomePageState extends State<HomePage> {
 }
 
 const getUserArticlesGraphQL = """
-  query {
-    getArticlesForUser(userId: "6244aa90a9289e13d10be99c"){
+  query (\$userId: ID!){
+    getArticlesForUser(userId: \$userId){
       format
       topic
       author
@@ -189,11 +206,25 @@ const getUserArticlesGraphQL = """
 """;
 
 const adjustavedArticlesGraphQL = """
-  mutation (\$input: saveArticleInput!){
-    adjustSavedArticles(saveArticleInput: \$input){
+  mutation (\$username: String!, \$format: String!, \$topic: String!, \$title: String!, \$author: String!, \$url: String!, \$imageUrl: String!, \$saved: Boolean!){
+    adjustSavedArticles(saveArticleInput: {
+      username: \$username
+      topic: \$topic
+      format: \$format
+      title: \$title
+      author: \$author
+      url: \$url
+      imageUrl: \$imageUrl
+      saved: \$saved
+    }){
+      username
+      password
+      email
+      id
+      interests
       savedArticles{
         title
+        }
       }
     }
-  }
 """;

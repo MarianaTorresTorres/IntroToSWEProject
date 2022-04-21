@@ -2,12 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class InterestsPage extends StatefulWidget {
+  final dynamic userData;
+  const InterestsPage({required this.userData});
   @override
-  InterestsPageState createState() => InterestsPageState();
+  InterestsPageState createState() => InterestsPageState(user: userData);
 }
 
 class InterestsPageState extends State<InterestsPage> {
+  dynamic user;
+  InterestsPageState({this.user});
+  bool setInterest = true;
   final selectedInterests = Set<String>();
+
   Map<String, String> allInterests = {
     "Economics": "economics",
     "Renewable Energy": "renewableenergy",
@@ -18,7 +24,7 @@ class InterestsPageState extends State<InterestsPage> {
     "Religion": "religion"
   };
 
-  Widget buildRow(final topic) {
+  Widget buildRow(final String topic) {
     final alreadySaved = selectedInterests.contains(allInterests[topic]);
     return Mutation(
         options: MutationOptions(
@@ -43,6 +49,9 @@ class InterestsPageState extends State<InterestsPage> {
                   final interests = [];
                   interests.addAll(selectedInterests);
                   runMutation({
+                    'username': user['username'],
+                    'email': user['email'],
+                    'password': user['password'],
                     'interests': interests,
                   });
                 });
@@ -52,6 +61,13 @@ class InterestsPageState extends State<InterestsPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (setInterest) {
+      String interests = user['interests'].toString();
+      List<String> userInterests =
+          interests.substring(1, interests.length - 1).split(', ');
+      selectedInterests.addAll(userInterests);
+      setInterest = false;
+    }
     final interestsArr = [];
     interestsArr.addAll(allInterests.keys);
     return Scaffold(
@@ -96,11 +112,11 @@ class InterestsPageState extends State<InterestsPage> {
 }
 
 const editUserInterestsGraphQL = """
-  mutation (\$interests: [String]!){
+  mutation (\$username: String!, \$email: String!, \$password: String!, \$interests: [String]!){
     editUserProfile(editUserProfileInput: {
-      username: "demouser"
-      email: "mari.torret@gmail.com"
-      password: "pZkwOeXC3CyIDgqGikUpGO5AdjONVO5Qjad03Bu4x7kVRiwoEpvu2"
+      username: \$username
+      email: \$email
+      password: \$password
       interests: \$interests
     }){
       username
